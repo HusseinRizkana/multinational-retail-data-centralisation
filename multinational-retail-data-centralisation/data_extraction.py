@@ -1,6 +1,6 @@
 import sqlalchemy as db
 import pandas as pd
-
+import tabula
 class DataExtractor:
     def __init__(self, engine):
         """
@@ -51,5 +51,15 @@ class DataExtractor:
             data = [row._asdict() for row in rows]
             return pd.DataFrame(data)
 
+    def retrieve_pdf_data(self,url):
+        '''
+        this method takes in a link as an argument and returns a pandas DataFrame
+        '''
+        dfs = tabula.read_pdf(url,stream=True,pages="all",multiple_tables=False)
+        return dfs
 
+if __name__=="__main__":
+    data_extractor = DataExtractor(None)
+    df = data_extractor.retrieve_pdf_data("https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf")[0]
+    print(df)
     
