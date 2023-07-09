@@ -1,6 +1,8 @@
 import yaml
 import sqlalchemy as db
 import pandas as pd
+
+
 class DatabaseConnector:
 
     def __init__(self):
@@ -44,7 +46,6 @@ class DatabaseConnector:
             mode = "replace"
         else:
             mode = "append"
-        
         return df.to_sql(table_name, self.db_engine, if_exists=mode, index=False)
 
 

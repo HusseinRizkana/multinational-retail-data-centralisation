@@ -1,6 +1,8 @@
 import sqlalchemy as db
 import pandas as pd
 import tabula
+
+
 class DataExtractor:
     def __init__(self, engine):
         """

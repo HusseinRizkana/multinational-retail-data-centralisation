@@ -2,9 +2,9 @@ import pandas as pd
 import datetime
 import pycountry
 import re
-class DataCleaning:
-    
 
+
+class DataCleaning:
 
     def duplicate_remove(self,df:pd.DataFrame):
         duplicates = df.duplicated(subset=['first_name',	'last_name',	'date_of_birth'])
@@ -22,7 +22,6 @@ class DataCleaning:
         except ValueError:
             return False
         
-    # date formats
     def date_format(self,x:str):
         try :
             if len(x.split("-"))==3 and x.replace("-","").isnumeric():
@@ -42,11 +41,6 @@ class DataCleaning:
         except:
             return None
 
-
-
-
-        
-        
     def phone_clean(self,df:pd.DataFrame):
         # deal with phone numbers
         df["phone_number"]= df["phone_number"].apply(lambda x:str(x))
@@ -54,8 +48,6 @@ class DataCleaning:
          
         return df
 
-
-    # deal with null values
     def null_to_none(self,x):
         return x if x != "NULL" else None
 
@@ -64,8 +56,6 @@ class DataCleaning:
         df.dropna(inplace = True)
         return df
 
-
-
     def get_country_name(self,code):
         try:
             country = pycountry.countries.get(alpha_2=code.upper())
@@ -73,14 +63,12 @@ class DataCleaning:
         except AttributeError:
             return None
 
-
     def get_country_code(self,name):
         try:
             country = pycountry.countries.search_fuzzy(name)[0]
             return country.alpha_2
         except LookupError:
             return None
-
 
     def fill_none_countries(self,df:pd.DataFrame):
         for i in range(len(df["country"])):
@@ -92,9 +80,6 @@ class DataCleaning:
                 pass
         return df
     
-
-    
-
     def dob_clean(self,df:pd.DataFrame):
         #format dob as datetime
         df["date_of_birth"] = df["date_of_birth"].apply(self.date_format)
@@ -111,8 +96,8 @@ class DataCleaning:
         df["first_name"] = df["first_name"].loc[df["first_name"].str.isalpha()]
         df["first_name"] = df["first_name"].str.lower()
         df["first_name"] = df["first_name"].str.capitalize()
-
         return df
+    
     def last_name_clean(self,df:pd.DataFrame):
         df["last_name"] = df["last_name"].loc[df["last_name"].str.isalpha()]
         df["last_name"] = df["last_name"].str.lower()
@@ -126,10 +111,8 @@ class DataCleaning:
         df["email_address"] = df["email_address"].astype(str)
         # Create a boolean mask of email addresses containing both "@" and "."
         mask = df["email_address"].str.contains("@") & df["email_address"].str.contains(".")
-
         # Create a new DataFrame with filtered email addresses
         df["email_address"] = df["email_address"].loc[mask]
-
         df["email_address"] = df["email_address"].str.lower()
         return df
     
@@ -137,15 +120,19 @@ class DataCleaning:
         df["address"] = df["address"].loc[df["address"] != "null"]
         df["address"] = df["address"].loc[df["address"] != ""]
         return df
+    
     def check_str(self,string):
         return True if all(x.isalpha() or x.isspace() for x in string) else False
+    
     def country_clean(self,df:pd.DataFrame):
         df["country"] = df["country"].loc[df["country"].apply(self.check_str)]
         df["country"] = df["country"].str.capitalize()
         return df
+    
     def user_uuid_clean(self,df:pd.DataFrame):
         df["user_uuid"] = df["user_uuid"].loc[df["user_uuid"].str.len()==36]
         return df
+   
     def dropnull(self,df:pd.DataFrame):
         return  df.dropna(subset=["first_name","last_name"])
         
@@ -164,7 +151,7 @@ class DataCleaning:
         df = self.join_date_clean(df)
         df = self.phone_clean(df)
         df = self.address_clean(df)
-        df= self.company_clean(df)
+        df = self.company_clean(df)
         df = self.email_address_clean(df)
         df = self.first_name_clean(df)
         df = self.last_name_clean(df)
@@ -172,5 +159,32 @@ class DataCleaning:
         df = self.clean_None(df) 
         df = self.clean_duplicates(df)
         df = self.dropnull(df)
+        return df
+    
+    def clean_card_number(self,df:pd.DataFrame):
+        return df
+    
+    def clean_card_expire(self,df:pd.DataFrame):
+        return df
+    
+    def clean_card_provider(self,df:pd.DataFrame):
+        return df
+    
+    def clean_card_date_payment(self,df:pd.DataFrame):
+        return df
+    
+    def clean_card_nulls(self,df:pd.DataFrame):
+        return df
+    
+    def clean_card_duplicates(self,df:pd.DataFrame):
+        return df
+    
+    def clean_card_data(self,df:pd.DataFrame):
+        df = self.clean_card_number(df)
+        df = self.clean_card_expire(df)
+        df = self.clean_card_provider(df)
+        df = self.clean_card_date_payment(df)
+        df = self.clean_card_duplicates(df)
+        df = self.clean_card_nulls(df)
         return df
    
